@@ -1,12 +1,3 @@
-import random
-import sys
-import Sector
-import datetime
-from Sector import *
-from PIL import Image
-
-sys.setrecursionlimit(1000000000)
-
 import math
 import random
 import sys
@@ -17,24 +8,6 @@ from PIL import Image
 
 sys.setrecursionlimit(1000000000)
 
-negro = Color("Negro", (0, 0, 0))
-azul = Color("Azul", (0, 0, 255))
-verde = Color("Verde", (0, 255, 0))
-celeste = Color("Celeste", (0, 255, 255))
-rojo = Color("Rojo", (255, 0, 0))
-morado = Color("Morado", (255, 0, 255))
-amarillo = Color("Amarillo", (255, 255, 0))
-
-
-def resetColores():
-    negro.cantidad = 0
-    azul.cantidad = 0
-    verde.cantidad = 0
-    celeste.cantidad = 0
-    rojo.cantidad = 0
-    morado.cantidad = 0
-    amarillo.cantidad = 0
-
 
 def distance(xCord1, xCord2, yCord1, yCord2):
     sq1 = (xCord1 - xCord2) ** 2
@@ -43,53 +16,37 @@ def distance(xCord1, xCord2, yCord1, yCord2):
 
 
 def getColor(pX, pY):
-    im = Image.open('garfield.jpg')  # Can be many different formats.
+    im = Image.open('Pikachu.jpg')  # Can be many different formats.
     pix = im.load()
     return pix[pX, pY]  # Get the RGBA Value of the a pixel of an image
 
 
 def agregarPixel(x, y, cuadrante, color):
-    listaColores = cuadrante.listaColores
-    colorcito = ""
     if color[0] <= 127:
         if color[1] <= 127:
             if color[2] <= 127:
-                if not negro in listaColores:
-                    listaColores.append(negro)
-                colorcito = "Negro"
+                cuadrante.aumentarNegros()
             else:
-                if not azul in listaColores:
-                    listaColores.append(azul)
-                colorcito = "Azul"
+                cuadrante.aumentarAzules()
         else:
             if color[2] <= 127:
-                if not verde in listaColores:
-                    listaColores.append(verde)
-                colorcito = "Verde"
+                cuadrante.aumentarVerde()
             else:
-                if not celeste in listaColores:
-                    listaColores.append(celeste)
-                colorcito = "Celeste"
+                cuadrante.aumentarCeleste()
     else:
         if color[1] <= 127:
             if color[2] <= 127:
-                if not rojo in listaColores:
-                    listaColores.append(rojo)
-                colorcito = "Rojo"
+                cuadrante.aumentarRojo()
             else:
-                if not morado in listaColores:
-                    listaColores.append(morado)
-                colorcito = "Morado"
+                cuadrante.aumentarMorado()
         else:
-            if not amarillo in listaColores:
-                listaColores.append(amarillo)
-            colorcito = "Amarillo"
-    listaColores[cuadrante.findByName(colorcito)].cantidad += 1
-    cuadrante.listPixels.append(Pixel(x, y, colorcito))
+            cuadrante.aumentarAmarillo()
+    cuadrante.listPixels.append(Pixel(x, y, color))
 
 
 def obtenerMuestras(cantDivisiones, porcentaje):
     return round(1024 * 1024 / cantDivisiones * porcentaje)
+
 
 def crearSectores(cantDiv, pLengthSector):
     xMin = 0
@@ -110,35 +67,49 @@ def crearSectores(cantDiv, pLengthSector):
 
 
 def mapearMuestra(muestra, randomProbability, listaSectores):
+    probabilidad = 0.0
+    #color =
     for cuadrante in listaSectores:
         for cant_Muestras in range(0, muestra):
-            print("Cuadrante Probabilidad: ", cuadrante.probability)
             if cuadrante.probability > randomProbability:
                 randomX = random.randint(cuadrante.xMin, cuadrante.xMax)
                 randomY = random.randint(cuadrante.yMin, cuadrante.yMax)
                 color = getColor(randomX, randomY)
                 if color[0] <= 254 and color[1] <= 254 and color[2] <= 254:
                     agregarPixel(randomX, randomY, cuadrante, color)
+                    probabilidad += 0.008
                 else:
-                    cuadrante.probability -= 0.05
-                print(cuadrante.porcentajePorColor())
+                    probabilidad -= 0.05
+                #print("Color: ", color)
+                #print(" Y: ", cuadrante.yMin, cuadrante.yMax, " X: ", cuadrante.xMin, cuadrante.xMax,
+                #      "Cuadrante Probabilidad: ", cuadrante.probability)
+        cuadrante.probability += probabilidad
+        print("Cuadrante: ", cuadrante.probability)
+        probabilidad = 0.0
 
 
 def mapearSector(cantMuestras, pCantDiv):
     tamanoCuadrante = int(1023 / pCantDiv)
     listaSectores = crearSectores(pCantDiv, tamanoCuadrante)
-    muestra = round(cantMuestras * 0.5)
+    muestra = round(cantMuestras / 5)
     for cant in range(0, 5):
-        randomProbability = random.uniform(0.1, 1.1)
-        print("I: ",cant,"Random:",randomProbability)
+        randomProbability = random.uniform(0.1, 1.0)
+        print("-----------------------------------------------------")
+        print("I: ", cant, "Random:", randomProbability)
         mapearMuestra(muestra, randomProbability, listaSectores)
+        print("-----------------------------------------------------")
+
+    i = 1
     for sector in listaSectores:
+        print('Sector', i)
+        print('Cantidad Pixeles Sampleado por Sector: ', len(sector.listPixels))
         sector.porcentajePorColor()
+        i += 1
 
 
 def sampleo(pCantDiv, pPorcentaje):
-    im = Image.open('garfield.jpg')
     cantMuestras = obtenerMuestras(pCantDiv, pPorcentaje)
+    print("Cant: ", cantMuestras)
     mapearSector(cantMuestras, pCantDiv)
 
 
@@ -147,4 +118,4 @@ def pintarCuadricula(pX, pY, pImage):
     pix[pX, pY] = (0, 100, 0)
 
 
-sampleo(4, 0.00001)
+sampleo(4, 0.0005)

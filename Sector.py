@@ -1,18 +1,26 @@
 import Pixel
 from Pixel import *
-from collections import Counter
+from Color import *
+
+negro = Color("Negro", (0, 0, 0))
+azul = Color("Azul", (0, 0, 255))
+verde = Color("Verde", (0, 255, 0))
+celeste = Color("Celeste", (0, 255, 255))
+rojo = Color("Rojo", (255, 0, 0))
+morado = Color("Morado", (255, 0, 255))
+amarillo = Color("Amarillo", (255, 255, 0))
 
 
 class Sector:
     def __init__(self, xMin, xMax, yMin, yMax):
         self.listPixels = []
         self.porcentageColor = 0.0
-        self.probability = 1
+        self.probability = 1.0
         self.xMin = xMin
         self.xMax = xMax
         self.yMin = yMin
         self.yMax = yMax
-        self.listaColores = []
+        self.matrizColores = [[negro, azul, verde, celeste, rojo, morado, amarillo], [0, 0, 0, 0, 0, 0, 0]]
 
     def getPixels(self):
         return self.listPixels
@@ -51,15 +59,34 @@ class Sector:
 
     def porcentajePorColor(self):
         cantidadMuestra = len(self.listPixels)
-        for color in self.listaColores:
-            print("Cantidad: ", color.cantidad, "Cantidad muestra: ", cantidadMuestra)
-            color.porcentage = color.cantidad / cantidadMuestra * 100
-            print("Color: ", color.nombre, " Porcentaje: ", color.porcentage)
+        largoColor = 0
+        while largoColor < len(self.matrizColores[0]):
+            color = self.matrizColores[0][largoColor]
+            cantidadColores = self.matrizColores[1][largoColor]
+            if cantidadMuestra > 0:
+                color.porcentage = 100/cantidadMuestra * cantidadColores
+                if(color.porcentage > 0):
+                    print("Cantidad Color:", cantidadColores)
+                    print("Color: ", color.nombre, " Porcentaje: ", color.porcentage)
+            largoColor += 1
 
-        #print("Entre x=", self.xMin, "y x=", self.xMax)
-        #print("Entre y=", self.yMin, "y y=", self.yMax)
+    def aumentarNegros(self):
+        self.matrizColores[1][0] += 1
 
-    def findByName(self,nombre):
-        for color in self.listaColores:
-            if color.nombre == nombre:
-                return self.listaColores.index(color)
+    def aumentarAzules(self):
+        self.matrizColores[1][1] += 1
+
+    def aumentarVerde(self):
+        self.matrizColores[1][2] += 1
+
+    def aumentarCeleste(self):
+        self.matrizColores[1][3] += 1
+
+    def aumentarRojo(self):
+        self.matrizColores[1][4] += 1
+
+    def aumentarMorado(self):
+        self.matrizColores[1][5] += 1
+
+    def aumentarAmarillo(self):
+        self.matrizColores[1][6] += 1

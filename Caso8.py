@@ -87,6 +87,8 @@ def mapearMuestra(muestra, randomProbability, listaSectores):
         print("Cuadrante: ", cuadrante.probability)
         probabilidad = 0.0
 
+    
+
 
 def mapearSector(cantMuestras, pCantDiv):
     tamanoCuadrante = int(1023 / pCantDiv)

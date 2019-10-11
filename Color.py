@@ -5,6 +5,7 @@ class Color:
         self.porcentage = 0
 
     def __repr__(self):
-        return '{}: {} {} {} {}'.format(self.__class__.__name__,
+        return '{}: {} {} {}'.format(self.__class__.__name__,
                                         self.nombre,
-                                        self.rgb)
+                                        self.rgb,
+                                        self.porcentage)

@@ -33,6 +33,7 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+<<<<<<< Updated upstream
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -40,6 +41,9 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+=======
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Caso-8.0/Caso-8.0" />
+>>>>>>> Stashed changes
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -99,10 +103,17 @@
       <option name="presentableId" value="Default" />
       <updated>1570560849335</updated>
       <workItem from="1570560850872" duration="7093000" />
+<<<<<<< Updated upstream
       <workItem from="1570574297908" duration="12621000" />
       <workItem from="1570600383346" duration="5896000" />
+<<<<<<< Updated upstream
       <workItem from="1570727128831" duration="235000" />
       <workItem from="1570812779692" duration="556000" />
+=======
+=======
+      <workItem from="1570574297908" duration="13646000" />
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>

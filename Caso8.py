@@ -5,7 +5,6 @@ import Sector
 from Sector import *
 from Color import *
 from PIL import Image
-from GeneticAlgorithm import *
 
 sys.setrecursionlimit(1000000000)
 
@@ -85,7 +84,7 @@ def mapearMuestra(muestra, randomProbability, listaSectores):
                 print(" Y: ", cuadrante.yMin, cuadrante.yMax, " X: ", cuadrante.xMin, cuadrante.xMax,
                       "Cuadrante Probabilidad: ", cuadrante.probability)
         cuadrante.probability += probabilidad
-        # print("Cuadrante: ", cuadrante.probability)
+        print("Cuadrante: ", cuadrante.probability)
         probabilidad = 0.0
 
 
@@ -113,7 +112,6 @@ def mapearSector(cantMuestras, pCantDiv):
 
     terminarSVG()
 
-
 def sampleo(pCantDiv, pPorcentaje):
     cantMuestras = obtenerMuestras(pCantDiv, pPorcentaje)
     print("Cant: ", cantMuestras)
@@ -125,4 +123,4 @@ def pintarCuadricula(pX, pY, pImage):
     pix[pX, pY] = (0, 100, 0)
 
 
-sampleo(8, 0.001)
+sampleo(4, 0.0005)

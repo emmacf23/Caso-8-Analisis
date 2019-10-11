@@ -1,5 +1,6 @@
 from Color import *
 
+
 class Rango:
     def __init__(self, color, cromosomaMinimo, cromosomaMaximo):
         self.color = color

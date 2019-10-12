@@ -1,19 +1,18 @@
 import math
-import random
 import sys
-import Sector
-from Sector import *
-from Color import *
-from GeneticAlgorithm import *
 from PIL import Image
+from GeneticAlgorithm import *
+from Pixel import *
+from Sector import *
 
 sys.setrecursionlimit(1000000000)
 
-
+"""
 def distance(xCord1, xCord2, yCord1, yCord2):
     sq1 = (xCord1 - xCord2) ** 2
     sq2 = (yCord1 - yCord2) ** 2
     return math.sqrt(sq1 + sq2)
+"""
 
 
 def getColor(pX, pY):
@@ -22,106 +21,101 @@ def getColor(pX, pY):
     return pix[pX, pY]  # Get the RGBA Value of the a pixel of an image
 
 
-def agregarPixel(x, y, cuadrante, color):
-    if color[0] <= 127:
-        if color[1] <= 127:
-            if color[2] <= 127:
-                cuadrante.aumentarNegros()
+def addPixel(pX, pY, pQuadrant, pColor):
+    if pColor[0] <= 127:
+        if pColor[1] <= 127:
+            if pColor[2] <= 127:
+                pQuadrant.aumentarNegros()
             else:
-                cuadrante.aumentarAzules()
+                pQuadrant.aumentarAzules()
         else:
-            if color[2] <= 127:
-                cuadrante.aumentarVerde()
+            if pColor[2] <= 127:
+                pQuadrant.aumentarVerde()
             else:
-                cuadrante.aumentarCeleste()
+                pQuadrant.aumentarCeleste()
     else:
-        if color[1] <= 127:
-            if color[2] <= 127:
-                cuadrante.aumentarRojo()
+        if pColor[1] <= 127:
+            if pColor[2] <= 127:
+                pQuadrant.aumentarRojo()
             else:
-                cuadrante.aumentarMorado()
+                pQuadrant.aumentarMorado()
         else:
-            cuadrante.aumentarAmarillo()
-    cuadrante.listPixels.append(Pixel(x, y, color))
+            pQuadrant.aumentarAmarillo()
+    pQuadrant.listPixels.append(Pixel(pX, pY, pColor))
 
 
-def obtenerMuestras(cantDivisiones, porcentaje):
-    return round(1024 * 1024 / cantDivisiones * porcentaje)
+def obtainSample(pQuantDivi, porcentage):
+    return round(1024 * 1024 / pQuantDivi * porcentage)
 
 
-def crearSectores(cantDiv, pLengthSector):
+def createSectors(pQuantDiv, pLengthSector):
     xMin = 0
     yMin = 0
     yMax = pLengthSector
     xMax = pLengthSector
-    listaSectores = []
-    for fila in range(1, cantDiv + 1):
-        for columna in range(1, cantDiv + 1):
-            listaSectores.append(Sector(xMin, xMax, yMin, yMax))
+    sectorList = []
+    for fila in range(1, pQuantDiv + 1):
+        for columna in range(1, pQuantDiv + 1):
+            sectorList.append(Sector(xMin, xMax, yMin, yMax))
             xMin += pLengthSector
             xMax += pLengthSector
         xMin = 0
         xMax = pLengthSector
         yMin += pLengthSector
         yMax += pLengthSector
-    return listaSectores
+    return sectorList
 
 
-def mapearMuestra(muestra, randomProbability, listaSectores):
-    probabilidad = 0.0
-
-    for cuadrante in listaSectores:
-        for cant_Muestras in range(0, muestra):
-            if cuadrante.probability > randomProbability:
-                randomX = random.randint(cuadrante.xMin, cuadrante.xMax)
-                randomY = random.randint(cuadrante.yMin, cuadrante.yMax)
+def mapSample(pSample, randomProbability, pSectorList):
+    probability = 0.0
+    for quadrant in pSectorList:
+        for cant_Sample in range(0, pSample):
+            if quadrant.probability > randomProbability:
+                randomX = random.randint(quadrant.xMin, quadrant.xMax - 1)
+                randomY = random.randint(quadrant.yMin, quadrant.yMax - 1)
                 color = getColor(randomX, randomY)
                 if color[0] <= 254 and color[1] <= 254 and color[2] <= 254:
-                    agregarPixel(randomX, randomY, cuadrante, color)
-                    probabilidad += 0.008
+                    addPixel(randomX, randomY, quadrant, color)
+                    probability += 0.008
                 else:
-                    probabilidad -= 0.05
-                #print("Color: ", color)
-                #print(" Y: ", cuadrante.yMin, cuadrante.yMax, " X: ", cuadrante.xMin, cuadrante.xMax,
-                #      "Cuadrante Probabilidad: ", cuadrante.probability)
-        cuadrante.probability += probabilidad
-        print("Cuadrante: ", cuadrante.probability)
-        probabilidad = 0.0
+                    probability -= 0.05
+        quadrant.probability += probability
+        probability = 0.0
 
 
-def mapearSector(cantMuestras, pCantDiv):
+def mapSector(pQuantSample, pQuantDiv):
     global svgStringGrande
-    tamanoCuadrante = int(1023 / pCantDiv)
-    listaSectores = crearSectores(pCantDiv, tamanoCuadrante)
-    muestra = round(cantMuestras / 5)
-    for cant in range(0, 5):
+    sectorList = createSectors(pQuantDiv, round(1023 / pQuantDiv))
+    sample = round(pQuantSample / 4)
+    for cant in range(1, 5):
+        print(cant)
         randomProbability = random.uniform(0.1, 1.0)
-        print("-----------------------------------------------------")
-        print("I: ", cant, "Random:", randomProbability)
-        mapearMuestra(muestra, randomProbability, listaSectores)
-        print("-----------------------------------------------------")
-
-    i = 1
-    for sector in listaSectores:
-        print('Sector', i)
-        print('Cantidad Pixeles Sampleado por Sector: ', len(sector.listPixels))
-        if len(sector.listPixels) != 0:
-            sector.porcentajePorColor()
-            Genetic(sector)
-            print('------------------------------------------------------------------')
-        i += 1
-
-    terminarSVG()
-
-def sampleo(pCantDiv, pPorcentaje):
-    cantMuestras = obtenerMuestras(pCantDiv, pPorcentaje)
-    print("Cant: ", cantMuestras)
-    mapearSector(cantMuestras, pCantDiv)
+        # print("-----------------------------------------------------")
+        # print("I: ", cant, "Random:", randomProbability)
+        mapSample(sample, randomProbability, sectorList)
+        # print("-----------------------------------------------------")
+    for j in range(1, 10):
+        i = 1
+        for sector in sectorList:
+            print('Sector', i)
+            print('Cantidad Pixeles Sampleado por Sector: ', len(sector.listPixels))
+            if len(sector.listPixels) != 0:
+                sector.porcentajePorColor()
+                Genetic(sector)
+                print('------------------------------------------------------------------')
+            i += 1
+        terminarSVG(j)
 
 
-def pintarCuadricula(pX, pY, pImage):
+def sampling(pQuantDiv, pPorcentage):
+    quantSample = obtainSample(pQuantDiv, pPorcentage)
+    print("Cant: ", quantSample)
+    mapSector(quantSample, pQuantDiv)
+
+
+def paintCuadricula(pX, pY, pImage):
     pix = pImage.load()
     pix[pX, pY] = (0, 100, 0)
 
 
-sampleo(12, 0.0005)
+sampling(8, 0.00005)

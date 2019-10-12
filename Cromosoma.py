@@ -9,6 +9,6 @@ class Cromosoma:
         self.Color = pColor
 
     def __repr__(self):
-        return '{}: {} {}'.format(self.__class__.__name__,
-                                        self.genes,
-                                        self.Color)
+        return '{}: {} {} {} {}'.format(self.__class__.__name__,
+                                        self.genes,self.point1,
+                                        self.Color,self.aptitud)

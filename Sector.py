@@ -117,6 +117,7 @@ class Sector:
         self.yMin = yMin
         self.yMax = yMax
         self.matrizColores = [[negro, azul, verde, celeste, rojo, morado, amarillo], [0, 0, 0, 0, 0, 0, 0]]
+        self.poblacion = []
 
     def getPixels(self):
         return self.listPixels
@@ -154,15 +155,15 @@ class Sector:
         return pixelsPoligono
 
     def porcentajePorColor(self):
-        cantidadMuestra = len(self.listPixels)
+        cantSample = len(self.listPixels)
         largoColor = 0
         while largoColor < len(self.matrizColores[0]):
             color = self.matrizColores[0][largoColor]
-            cantidadColores = self.matrizColores[1][largoColor]
-            if cantidadMuestra > 0:
-                color.porcentage = 100/cantidadMuestra * cantidadColores
-                if(color.porcentage > 0):
-                    print("Cantidad Color:", cantidadColores)
+            cantColors = self.matrizColores[1][largoColor]
+            if cantSample > 0:
+                color.porcentage = 100 / cantSample * cantColors
+                if color.porcentage > 0:
+                    print("Cantidad Color:", cantColors)
                     print("Color: ", color.nombre, " Porcentaje: ", color.porcentage)
             largoColor += 1
 

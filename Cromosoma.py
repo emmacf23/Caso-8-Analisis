@@ -7,3 +7,8 @@ class Cromosoma:
         self.point3 = pPoint3
         self.point4 = pPoint4
         self.Color = pColor
+
+    def __repr__(self):
+        return '{}: {} {}'.format(self.__class__.__name__,
+                                        self.genes,
+                                        self.Color)

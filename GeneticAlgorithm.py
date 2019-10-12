@@ -71,20 +71,17 @@ def cuantos_digitos(n):
 
 def isBitOn(pDescendant, pivot):
     if pDescendant & (1 << pivot):
-        print("SET")
         return True
     else:
-        print("NO SET")
         return False
 
 
 def mutation(pDescendant, pivot, set):
-    """Set the index:th bit of v to 1 if x is truthy, else to 0, and return the new value."""
-    mask = 1 << pivot  # Compute mask, an integer with just bit 'index' set.
-    pDescendant &= ~mask  # Clear the bit indicated by the mask (if x is False)
+    mask = 1 << pivot
+    pDescendant &= ~mask
     if set:
-        pDescendant |= mask  # If x was True, set the bit indicated by the mask.
-    return pDescendant  # Return the result, we're done.
+        pDescendant |= mask
+    return pDescendant
 
 
 
@@ -92,16 +89,18 @@ def crossover(pParent1,pParent2):
     global cantidadCromosomas
     pivotParent2 = random.randint(3,6)
     pivotParent1 = 8 - pivotParent2
-    #print("Pivot1:",pivotParent2,"Pivot2:",pivotParent1)
+    print("Pivot1:",pivotParent2,"Pivot2:",pivotParent1)
     descendant = ((pParent1>>pivotParent2)<<pivotParent2) | (((pParent2<<pivotParent1) & cantidadCromosomas)>>pivotParent1)
     #print(descendant)
     probMutation = random.randint(0,100)
-    if probMutation < 5:
-        bit = random.randint(0,8)
+    print(probMutation)
+    if probMutation <= 5:
+        bit = random.randint(0,7)
+        print(bit)
         if isBitOn(descendant,bit):
-            mutation(descendant,bit,1)
+            descendant = mutation(descendant,bit,0)
         else:
-            mutation(descendant,bit,0)
+            descendant = mutation(descendant,bit,1)
         print("C muto xd")
 
     return descendant

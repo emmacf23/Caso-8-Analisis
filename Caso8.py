@@ -69,7 +69,7 @@ def crearSectores(cantDiv, pLengthSector):
 
 def mapearMuestra(muestra, randomProbability, listaSectores):
     probabilidad = 0.0
-    # color =
+
     for cuadrante in listaSectores:
         for cant_Muestras in range(0, muestra):
             if cuadrante.probability > randomProbability:

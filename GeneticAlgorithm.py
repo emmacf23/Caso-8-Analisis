@@ -119,7 +119,7 @@ def sacarSVG(poblacion):
     global svgStringGrande
     svgString = "<polygon points= " + '"'
     for cromosoma in poblacion:
-        print("Cromosoma: ", cromosoma)
+        #print("Cromosoma: ", cromosoma)
         svgString = svgString + str(cromosoma.point1[0]) + ',' + str(cromosoma.point1[1]) + ' '
         svgString = svgString + str(cromosoma.point2[0]) + ',' + str(cromosoma.point2[1]) + ' '
         svgString = svgString + str(cromosoma.point3[0]) + ',' + str(cromosoma.point3[1]) + ' '
@@ -139,11 +139,11 @@ def sacarAptos(poblacion, listaRangos):
     obtenerAptos(poblacion, listaRangos)
     poblacion.sort(key=lambda x: x.aptitud, reverse=False)
     poblacion = sorted(poblacion, key=lambda x: x.aptitud, reverse=False)
-    print("Poblacion:", poblacion)
+    #print("Poblacion:", poblacion)
     aptos = []
     for i in range(0, round(len(poblacion) / 2)):
         aptos.append(poblacion[i])
-    print("Aptos:", aptos)
+    #print("Aptos:", aptos)
     return aptos
 
 
@@ -176,14 +176,14 @@ def obtenerNuevaPoblacion(aptos, listaRangos, pSector, poblacion):
     return nuevaPoblacion
 
 
-def Genetic(pSector):
+def Genetic(pSector,iteration):
     rangeList = getChromoRange(pSector)
     rangeList.sort(key=lambda x: x.porcentage, reverse=True)
     rangeList = sorted(rangeList, key=lambda x: x.porcentage, reverse=True)
     pSector.poblacion = crearPoblacion(rangeList, pSector, 16)
-    sacarSVG(pSector.poblacion)
+    if iteration % 10 == 0:
+        sacarSVG(pSector.poblacion)
     aptos = sacarAptos(pSector.poblacion, rangeList)
-    print(pSector.poblacion)
     pSector.poblacion = obtenerNuevaPoblacion(aptos, rangeList, pSector, pSector.poblacion)
 
 

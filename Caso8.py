@@ -16,7 +16,7 @@ def distance(xCord1, xCord2, yCord1, yCord2):
 
 
 def getColor(pX, pY):
-    im = Image.open('Pikachu.jpg')  # Can be many different formats.
+    im = Image.open("garfield.jpg")  # Can be many different formats.
     pix = im.load()
     return pix[pX, pY]  # Get the RGBA Value of the a pixel of an image
 
@@ -94,17 +94,18 @@ def mapSector(pQuantSample, pQuantDiv):
         # print("I: ", cant, "Random:", randomProbability)
         mapSample(sample, randomProbability, sectorList)
         # print("-----------------------------------------------------")
-    for j in range(1, 10):
+    for j in range(1, 101):
         i = 1
         for sector in sectorList:
             print('Sector', i)
             print('Cantidad Pixeles Sampleado por Sector: ', len(sector.listPixels))
             if len(sector.listPixels) != 0:
                 sector.porcentajePorColor()
-                Genetic(sector)
+                Genetic(sector,j)
                 print('------------------------------------------------------------------')
             i += 1
-        terminarSVG(j)
+        if j % 10 == 0:
+            terminarSVG(j)
 
 
 def sampling(pQuantDiv, pPorcentage):
@@ -118,4 +119,4 @@ def paintCuadricula(pX, pY, pImage):
     pix[pX, pY] = (0, 100, 0)
 
 
-sampling(8, 0.00005)
+sampling(32, 0.00035)

@@ -1,6 +1,8 @@
 import Pixel
 from Pixel import *
-from ArbolColores import *
+# from ArbolColores import *
+from arbolNario import *
+
 
 class Sector:
     def __init__(self, xMin, xMax, yMin, yMax):
@@ -11,8 +13,92 @@ class Sector:
         self.xMax = xMax
         self.yMin = yMin
         self.yMax = yMax
-        self.matrizColores = [[negro, azul, verde, celeste, rojo, morado, amarillo], [0, 0, 0, 0, 0, 0, 0]]
+        self.matrizColores = [
+            [negro, azulOscuro, azul, verdeOscuro, turquesaOscuro, azulClaro, verde, verdeClaro, celeste, vino, morado,
+             purpura, gris, lila, lima, limaClaro, celesteClaro, rojo, fucsia, rosado, naranja, paloRosa, pink,
+             amarillo,
+             amarilloClaro, amarilloVerdoso, blanco],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
         self.poblacion = []
+
+    def increaseBlack(self):
+        self.matrizColores[1][0] += 1
+
+    def increaseDarkBlue(self):
+        self.matrizColores[1][1] += 1
+
+    def increaseBlue(self):
+        self.matrizColores[1][2] += 1
+
+    def increaseDarkGreen(self):
+        self.matrizColores[1][3] += 1
+
+    def increaseDarkTurquoise(self):
+        self.matrizColores[1][4] += 1
+
+    def increaseLigthBlue(self):
+        self.matrizColores[1][5] += 1
+
+    def increaseGreen(self):
+        self.matrizColores[1][6] += 1
+
+    def increaseLigthGreen(self):
+        self.matrizColores[1][7] += 1
+
+    def increaseCeleste(self):
+        self.matrizColores[1][8] += 1
+
+    def increaseWine(self):
+        self.matrizColores[1][9] += 1
+
+    def increasePurple(self):
+        self.matrizColores[1][10] += 1
+
+    def increasePurpura(self):
+        self.matrizColores[1][11] += 1
+
+    def increaseGrey(self):
+        self.matrizColores[1][12] += 1
+
+    def increaseLile(self):
+        self.matrizColores[1][13] += 1
+
+    def increaseLime(self):
+        self.matrizColores[1][14] += 1
+
+    def increaseLigthLime(self):
+        self.matrizColores[1][15] += 1
+
+    def increaseLightLightBlue(self):
+        self.matrizColores[1][16] += 1
+
+    def increaseRed(self):
+        self.matrizColores[1][17] += 1
+
+    def increaseFuchsia(self):
+        self.matrizColores[1][18] += 1
+
+    def increaseRose(self):
+        self.matrizColores[1][19] += 1
+
+    def increaseOrange(self):
+        self.matrizColores[1][20] += 1
+
+    def increasePaloRosa(self):
+        self.matrizColores[1][21] += 1
+
+    def increasePink(self):
+        self.matrizColores[1][22] += 1
+
+    def increaseYellow(self):
+        self.matrizColores[1][23] += 1
+
+    def increaseLigthYellow(self):
+        self.matrizColores[1][24] += 1
+
+    def increaseYellowGreen(self):
+        self.matrizColores[1][25] += 1
+
 
     def getPixels(self):
         return self.listPixels
@@ -61,24 +147,3 @@ class Sector:
                     print("Cantidad Color:", cantColors)
                     print("Color: ", color.nombre, " Porcentaje: ", color.porcentage)
             largoColor += 1
-
-    def aumentarNegros(self):
-        self.matrizColores[1][0] += 1
-
-    def aumentarAzules(self):
-        self.matrizColores[1][1] += 1
-
-    def aumentarVerde(self):
-        self.matrizColores[1][2] += 1
-
-    def aumentarCeleste(self):
-        self.matrizColores[1][3] += 1
-
-    def aumentarRojo(self):
-        self.matrizColores[1][4] += 1
-
-    def aumentarMorado(self):
-        self.matrizColores[1][5] += 1
-
-    def aumentarAmarillo(self):
-        self.matrizColores[1][6] += 1

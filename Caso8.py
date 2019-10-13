@@ -7,14 +7,6 @@ from Sector import *
 
 sys.setrecursionlimit(1000000000)
 
-"""
-def distance(xCord1, xCord2, yCord1, yCord2):
-    sq1 = (xCord1 - xCord2) ** 2
-    sq2 = (yCord1 - yCord2) ** 2
-    return math.sqrt(sq1 + sq2)
-"""
-
-
 def getColor(pX, pY):
     im = Image.open("garfield.jpg")  # Can be many different formats.
     pix = im.load()
@@ -22,25 +14,70 @@ def getColor(pX, pY):
 
 
 def addPixel(pX, pY, pQuadrant, pColor):
-    if pColor[0] <= 127:
-        if pColor[1] <= 127:
-            if pColor[2] <= 127:
-                pQuadrant.aumentarNegros()
+    if pColor[0] > 127:
+        if pColor[1] > 127:
+            if pColor[2] >= 127:
+                pQuadrant.increaseLigthYellow()
             else:
-                pQuadrant.aumentarAzules()
+                pQuadrant.increaseYellow()
+        elif pColor[1] == 127:
+            if pColor[2] > 127:
+                pQuadrant.increasePink()
+            elif pColor[2] == 127:
+                pQuadrant.increasePaloRosa()
+            else:
+                pQuadrant.increaseOrange()
         else:
-            if pColor[2] <= 127:
-                pQuadrant.aumentarVerde()
+            if pColor[2] > 127:
+                pQuadrant.increaseRose()
+            elif pColor[2] == 127:
+                pQuadrant.increaseFuchsia()
             else:
-                pQuadrant.aumentarCeleste()
+                pQuadrant.increaseRed()
+    elif pColor[0] == 127:
+        if pColor[1] > 127:
+            if pColor[2] > 127:
+                pQuadrant.increaseLightLightBlue()
+            elif pColor[2] == 127:
+                pQuadrant.increaseLigthLime()
+            else:
+                pQuadrant.increaseLime()
+        elif pColor[1] == 127:
+            if pColor[2] > 127:
+                pQuadrant.increaseLile()
+            elif pColor[2] == 127:
+                pQuadrant.increaseGrey()
+            else:
+                pQuadrant.increaseYellowGreen()
+        else:
+            if pColor[2] > 127:
+                pQuadrant.increasePurpura()
+            elif pColor[2] == 127:
+                pQuadrant.increasePurple()
+            else:
+                pQuadrant.increaseWine()
     else:
-        if pColor[1] <= 127:
-            if pColor[2] <= 127:
-                pQuadrant.aumentarRojo()
+        if pColor[1] > 127:
+            if pColor[2] > 127:
+                pQuadrant.increaseCeleste()
+            elif pColor[2] == 127:
+                pQuadrant.increaseLigthGreen()
             else:
-                pQuadrant.aumentarMorado()
+                pQuadrant.increaseGreen()
+        elif pColor[1] == 127:
+            if pColor[2] > 127:
+                pQuadrant.increaseLigthBlue()
+            elif pColor[2] == 127:
+                pQuadrant.increaseDarkTurquoise()
+            else:
+                pQuadrant.increaseDarkGreen()
         else:
-            pQuadrant.aumentarAmarillo()
+            if pColor[2] > 127:
+                pQuadrant.increaseBlue()
+            elif pColor[2] == 127:
+                pQuadrant.increaseDarkBlue()
+            else:
+                pQuadrant.increaseBlack()
     pQuadrant.listPixels.append(Pixel(pX, pY, pColor))
 
 
@@ -90,21 +127,20 @@ def mapSector(pQuantSample, pQuantDiv):
     for cant in range(1, 5):
         print(cant)
         randomProbability = random.uniform(0.1, 1.0)
-        # print("-----------------------------------------------------")
-        # print("I: ", cant, "Random:", randomProbability)
+        #print("-----------------------------------------------------")
+        #print("I: ", cant, "Random:", randomProbability)
         mapSample(sample, randomProbability, sectorList)
-        # print("-----------------------------------------------------")
-    for j in range(1, 101):
+        #print("-----------------------------------------------------")
+    for j in range(1, 11):
         i = 1
         for sector in sectorList:
             print('Sector', i)
-            print('Cantidad Pixeles Sampleado por Sector: ', len(sector.listPixels))
             if len(sector.listPixels) != 0:
                 sector.porcentajePorColor()
-                Genetic(sector,j)
-                print('------------------------------------------------------------------')
+                Genetic(sector, j)
+            #    print('------------------------------------------------------------------')
             i += 1
-        if j % 10 == 0:
+        if j % 2 == 0 or j == 1:
             terminarSVG(j)
 
 
@@ -119,4 +155,4 @@ def paintCuadricula(pX, pY, pImage):
     pix[pX, pY] = (0, 100, 0)
 
 
-sampling(32, 0.00035)
+sampling(16, 0.0001)

@@ -1,5 +1,4 @@
-"""from Color import *
-from anytree import *
+from Color import *
 
 negro = Color("Negro", (0, 0, 0))
 azulOscuro = Color("AzulOscuro", (0, 0, 127))
@@ -42,50 +41,68 @@ colores = [negro, azulOscuro, azul, verdeOscuro, turquesaOscuro, azulClaro, verd
 colores = colores + [gris, lila, lima, limaClaro, celesteClaro, rojo, fucsia, rosado, naranja, paloRosa, pink, amarillo,
                      amarilloClaro, blanco]
 
+class Node(object):
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+        self.children = []
 
-def armarArbolColores(colorR):
-    arbolR = Node(colorR)
-    verdeIndex = 0
-    for colorVerde in range(0, 3):
-        colorVerde = 'verde' + str(int(verdeIndex))
-        colorVerde = Node(colorVerde, parent=arbolR)
-        azulIndex = 0
-        for colorAzul in range(0, 3):
-            colorAzul = 'azul' + str(int(azulIndex))
-            colorAzul = Node(colorAzul, parent=colorVerde)
-            azulIndex += 127.5
-        verdeIndex += 127.5
+    def __repr__(self):
+        return '{}: {} {} {}'.format(self.__class__.__name__,
+                                     self.name,
+                                     self.value,
+                                     self.children)
 
-    return arbolR
+    def add_child(self, obj):
+        self.children.append(obj)
+
+    def armarArbolColores(self):
+        rojoIndex = 0
+        for colorRojo in range(0, 3):
+            nodoRojo = Node('Rojo',int(rojoIndex))
+            self.add_child(nodoRojo)
+            verdeIndex = 0
+            for colorVerde in range(0, 3):
+                nodoVerde = Node("Verde", int(verdeIndex))
+                nodoRojo.add_child(nodoVerde)
+                azulIndex = 0
+                for colorAzul in range(0, 3):
+                    nodoAzul = Node('Azul', int(azulIndex))
+                    nodoVerde.add_child(nodoAzul)
+                    azulIndex += 127.5
+                verdeIndex += 127.5
+
+    def is_leaf(self):
+        return len(self.children) == 0
+
+    def addColor(self,color,colorActual):
+        if self.is_leaf():
+            self.add_child(color)
+        else:
+            if colorActual[0] <= 85:
+                self.children[0].addColor(color,colorActual[1:])
+            elif colorActual[0] >= 86 and colorActual[0] <= 170:
+                self.children[1].addColor(color,colorActual[1:])
+            else:
+                self.children[2].addColor(color, colorActual[1:])
+
+    def fillColors(self,colores):
+        for color in colores:
+            self.addColor(color,color.rgb)
+
+    def searchColor(self,color):
+        if len(self.children) == 1:
+            return self.children[0]
+        else:
+            if color[0] <= 85:
+                return self.children[0].searchColor(color[1:])
+            elif color[0] >= 86 and color[0] <= 170:
+                return self.children[1].searchColor(color[1:])
+            else:
+                return self.children[2].searchColor(color[1:])
 
 
-def llenarArbol(colores):
-    for color in colores:
-        if color.rgb[0] == 0:
-            llenarArbolAux(arbolR0, color)
-        if color.rgb[0] == 127:
-            llenarArbolAux(arbolR127, color)
-        if color.rgb[0] == 255:
-            llenarArbolAux(arbolR255, color)
 
-
-def llenarArbolAux(nodo, color):
-    if nodo.is_leaf:
-        Node(color, parent=nodo, rgb=color.rgb)
-    else:
-        verdeNodo = "verde" + str(color.rgb[1])
-        verdeNodo = find(nodo, lambda node: node.name == verdeNodo)
-        azulNodo = 'azul' + str(color.rgb[2])
-        azulNodo = find(verdeNodo, lambda node: node.name == azulNodo)
-        return llenarArbolAux(azulNodo, color)
-
-
-def buscarColor(nodo, color):
-    return find_by_attr(nodo, name="rgb", value=color).name
-
-arbolR0 = armarArbolColores(0)
-arbolR127 = armarArbolColores(127)
-arbolR255 = armarArbolColores(255)
-llenarArbol(colores)
-
-"""
+arbolColores = Node('ArbolColores',0)
+arbolColores.armarArbolColores()
+arbolColores.fillColors(colores)

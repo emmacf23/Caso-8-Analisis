@@ -1,7 +1,6 @@
 import Pixel
 from Pixel import *
-# from ArbolColores import *
-from arbolNario import *
+from ArbolColores import *
 
 
 class Sector:
@@ -16,8 +15,7 @@ class Sector:
         self.matrizColores = [
             [negro, azulOscuro, azul, verdeOscuro, turquesaOscuro, azulClaro, verde, verdeClaro, celeste, vino, morado,
              purpura, gris, lila, lima, limaClaro, celesteClaro, rojo, fucsia, rosado, naranja, paloRosa, pink,
-             amarillo,
-             amarilloClaro, amarilloVerdoso, blanco],
+             amarillo,amarilloClaro, amarilloVerdoso, blanco],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
         self.poblacion = []
 

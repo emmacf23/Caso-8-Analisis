@@ -1,4 +1,6 @@
 import sys
+from multiprocessing import Process
+
 from PIL import Image
 from GeneticAlgorithm import *
 from Imagen import *
@@ -61,30 +63,39 @@ def mapSample(pSample, randomProbability, pSectorList, imgName):
         probability = 0.0
 
 
+def cambiarPoblacion(sectores, pImgNuevo):
+    if sectores:
+        for i in range(0, len(sectores)):
+            pImgNuevo.sectores[i].poblacion = sectores[i].poblacion
+
+
 def mapSector(pQuantSample, pQuantDiv):
     global svgStringGrande
     imagenes = []
-    listImage = ["coku.jpeg", "Pikachu.jpg", "spiderman.png"]
-    # for imgName in listImage:
-    sectorList = createSectors(pQuantDiv, round(1023 / pQuantDiv))
-    sample = round(pQuantSample / 3)
-    for cant in range(1, 3):
-        print(cant)
-        randomProbability = random.uniform(0.1, 1.0)
-        mapSample(sample, randomProbability, sectorList, listImage[0])
-    imagenes.append(Imagen(listImage[1], sectorList))
-    # for img in imagenes:
-    #print(img.name)
-    for j in range(1, 10):
-        i = 1
-        for sector in imagenes[1].sectores:
-            print('Sector', i)
-            if len(sector.listPixels) != 0:
-                sector.porcentajePorColor()
-                Genetic(sector, j)
-            i += 1
-        if j % 1 == 0 or j == 1:
-            terminarSVG(j)
+    listImage = ["beach.png", "guacamaya.png"]
+    for imgName in listImage:
+        sectorList = createSectors(pQuantDiv, round(1023 / pQuantDiv))
+        sample = round(pQuantSample / 3)
+        for cant in range(0, 3):
+            print(cant)
+            randomProbability = random.uniform(0.1, 1.0)
+            mapSample(sample, randomProbability, sectorList, imgName)
+        imagenes.append(Imagen(imgName, sectorList))
+
+    sectores = []
+    for img in imagenes:
+        cambiarPoblacion(sectores, img)
+        for j in range(1, 51):
+            for sector in img.sectores:
+                print('Sector', sector.nombre)
+                if len(sector.listPixels) != 0:
+                    sector.porcentajePorColor()
+                    Genetic(sector, j)
+            if j % 25 == 0 or j == 1:
+                terminarSVG()
+                input("Puto Crack")
+        sectores = img.sectores
+        input("Digite una tecla")
 
 
 def sampling(pQuantDiv, pPorcentage):
@@ -98,4 +109,4 @@ def paintCuadricula(pX, pY, pImage):
     pix[pX, pY] = (0, 100, 0)
 
 
-sampling(64, 0.0002)
+sampling(64, 0.0001)

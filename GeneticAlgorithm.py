@@ -1,5 +1,6 @@
 import random
 
+from ArbolColores import *
 from Cromosoma import *
 from Rango import *
 
@@ -16,15 +17,15 @@ def getChromoRange(pSector):
     global genesSet, cantidadCromosomas
     cromosomaMinimo = 0
     listaRangos = []
-    genesSet = pSector.matrizColores[0]
-    for color in pSector.matrizColores[0]:
+    for color in pSector.colores:
+        color = pSector.arbol.searchColor(color.rgb)
         if color.porcentage > 0:
             cromosomaMaximo = round(cromosomaMinimo + cantidadCromosomas * color.porcentage / 100)
+            print('CromosomaMinimo:', cromosomaMinimo, 'CromosomaMaximo:', cromosomaMaximo, "Porcentaje:",
+                  color.porcentage)
             rango = Rango(color, cromosomaMinimo, cromosomaMaximo)
             listaRangos.append(rango)
             cromosomaMinimo = cromosomaMaximo + 1
-            print('CromosomaMinimo:', cromosomaMinimo, 'CromosomaMaximo:', cromosomaMaximo, "Porcentaje:",
-                  color.porcentage)
     return listaRangos
 
 
@@ -167,8 +168,8 @@ def Genetic(pSector, iteration):
     rangeList = getChromoRange(pSector)
     rangeList.sort(key=lambda x: x.porcentage, reverse=True)
     rangeList = sorted(rangeList, key=lambda x: x.porcentage, reverse=True)
-    pSector.poblacion = crearPoblacion(rangeList, pSector, 15)
-    if iteration % 2 == 0 or iteration == 1:
+    pSector.poblacion = crearPoblacion(rangeList, pSector, 30)
+    if iteration % 50 == 0 or iteration == 1:
         sacarSVG(pSector.poblacion)
     aptos = sacarAptos(pSector.poblacion, rangeList)
     pSector.poblacion = obtenerNuevaPoblacion(aptos, rangeList, pSector, pSector.poblacion)

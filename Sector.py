@@ -1,10 +1,13 @@
 import Pixel
+from Color import Color
 from Pixel import *
 from ArbolColores import *
 
 
 class Sector:
-    def __init__(self, xMin, xMax, yMin, yMax):
+    def __init__(self,nombre, xMin, xMax, yMin, yMax):
+        self.colores = self.crearColores()
+        self.nombre = nombre
         self.listPixels = []
         self.porcentageColor = 0.0
         self.probability = 1.0
@@ -12,91 +15,10 @@ class Sector:
         self.xMax = xMax
         self.yMin = yMin
         self.yMax = yMax
-        self.matrizColores = [
-            [negro, azulOscuro, azul, verdeOscuro, turquesaOscuro, azulClaro, verde, verdeClaro, celeste, vino, morado,
-             purpura, gris, lila, lima, limaClaro, celesteClaro, rojo, fucsia, rosado, naranja, paloRosa, pink,
-             amarillo,amarilloClaro, amarilloVerdoso, blanco],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+        self.arbol = Node('ArbolColores', 0)
+        self.arbol.armarArbolColores()
+        self.arbol.fillColors(self.colores)
         self.poblacion = []
-
-    def increaseBlack(self):
-        self.matrizColores[1][0] += 1
-
-    def increaseDarkBlue(self):
-        self.matrizColores[1][1] += 1
-
-    def increaseBlue(self):
-        self.matrizColores[1][2] += 1
-
-    def increaseDarkGreen(self):
-        self.matrizColores[1][3] += 1
-
-    def increaseDarkTurquoise(self):
-        self.matrizColores[1][4] += 1
-
-    def increaseLigthBlue(self):
-        self.matrizColores[1][5] += 1
-
-    def increaseGreen(self):
-        self.matrizColores[1][6] += 1
-
-    def increaseLigthGreen(self):
-        self.matrizColores[1][7] += 1
-
-    def increaseCeleste(self):
-        self.matrizColores[1][8] += 1
-
-    def increaseWine(self):
-        self.matrizColores[1][9] += 1
-
-    def increasePurple(self):
-        self.matrizColores[1][10] += 1
-
-    def increasePurpura(self):
-        self.matrizColores[1][11] += 1
-
-    def increaseGrey(self):
-        self.matrizColores[1][12] += 1
-
-    def increaseLile(self):
-        self.matrizColores[1][13] += 1
-
-    def increaseLime(self):
-        self.matrizColores[1][14] += 1
-
-    def increaseLigthLime(self):
-        self.matrizColores[1][15] += 1
-
-    def increaseLightLightBlue(self):
-        self.matrizColores[1][16] += 1
-
-    def increaseRed(self):
-        self.matrizColores[1][17] += 1
-
-    def increaseFuchsia(self):
-        self.matrizColores[1][18] += 1
-
-    def increaseRose(self):
-        self.matrizColores[1][19] += 1
-
-    def increaseOrange(self):
-        self.matrizColores[1][20] += 1
-
-    def increasePaloRosa(self):
-        self.matrizColores[1][21] += 1
-
-    def increasePink(self):
-        self.matrizColores[1][22] += 1
-
-    def increaseYellow(self):
-        self.matrizColores[1][23] += 1
-
-    def increaseLigthYellow(self):
-        self.matrizColores[1][24] += 1
-
-    def increaseYellowGreen(self):
-        self.matrizColores[1][25] += 1
-
 
     def getPixels(self):
         return self.listPixels
@@ -135,13 +57,55 @@ class Sector:
 
     def porcentajePorColor(self):
         cantSample = len(self.listPixels)
-        largoColor = 0
-        while largoColor < len(self.matrizColores[0]):
-            color = self.matrizColores[0][largoColor]
-            cantColors = self.matrizColores[1][largoColor]
+        print("Sector:", self.nombre)
+        print("Cantidad:", cantSample)
+        for color in self.colores:
+            colorArbol = self.arbol.searchColor(color.rgb)
+            #            print("Arbol",self.arbolColores)
             if cantSample > 0:
-                color.porcentage = 100 / cantSample * cantColors
-                if color.porcentage > 0:
-                    print("Cantidad Color:", cantColors)
-                    print("Color: ", color.nombre, " Porcentaje: ", color.porcentage)
-            largoColor += 1
+                colorArbol.porcentage = 100 / cantSample * colorArbol.cantidad
+                if colorArbol.porcentage > 0:
+                    print("Cantidad Color:", colorArbol.cantidad)
+                    print("Color: ", colorArbol.nombre, " Porcentaje: ", colorArbol.porcentage)
+
+    def crearColores(self):
+        negro = Color("Negro", (0, 0, 0))
+        azulOscuro = Color("AzulOscuro", (0, 0, 127))
+        azul = Color("Azul", (0, 0, 255))
+
+        verdeOscuro = Color("VerdeOscuro", (0, 127, 0))
+        turquesaOscuro = Color("TurquesaOscuro", (0, 127, 127))
+        azulClaro = Color("AzulClaro", (0, 127, 255))
+
+        verde = Color("Verde", (0, 255, 0))
+        verdeClaro = Color("VerdeClaro", (0, 255, 127))
+        celeste = Color("Celeste", (0, 255, 255))
+
+        vino = Color("Vino", (127, 0, 0))
+        morado = Color("Morado", (127, 0, 127))
+        purpura = Color("Purpura", (127, 0, 255))
+
+        amarilloVerdoso = Color("AmarilloVerdoso", (127, 127, 0))
+        gris = Color("Gris", (127, 127, 127))
+        lila = Color("Lila", (127, 127, 255))
+
+        lima = Color("Lima", (127, 255, 0))
+        limaClaro = Color("LimaClaro", (127, 255, 127))
+        celesteClaro = Color("CelesteClaro", (127, 255, 255))
+
+        rojo = Color("Rojo", (255, 0, 0))
+        fucsia = Color("Fucsia", (255, 0, 127))
+        rosado = Color("Rosado", (255, 0, 255))
+
+        naranja = Color("Naranja", (255, 127, 0))
+        paloRosa = Color("PaloRosa", (255, 127, 127))
+        pink = Color("Pink", (255, 127, 255))
+
+        amarillo = Color("Amarillo", (255, 255, 0))
+        amarilloClaro = Color("AmarilloClaro", (255, 255, 127))
+        blanco = Color("Blanco", (255, 255, 255))
+        return [negro, azulOscuro, azul, verdeOscuro, turquesaOscuro, azulClaro, verde, verdeClaro, celeste, vino,
+                   morado,
+                   purpura, amarilloVerdoso, gris, lila, lima, limaClaro, celesteClaro, rojo, fucsia, rosado, naranja,
+                   paloRosa, pink, amarillo,
+                   amarilloClaro, blanco]

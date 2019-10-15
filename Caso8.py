@@ -1,84 +1,27 @@
-import math
 import sys
 from PIL import Image
 from GeneticAlgorithm import *
-from Pixel import *
 from Sector import *
 
 sys.setrecursionlimit(1000000000)
 
+
 def getColor(pX, pY):
-    im = Image.open("garfield.jpg")  # Can be many different formats.
+    im = Image.open("coku.jpeg")  # Can be many different formats.
     pix = im.load()
     return pix[pX, pY]  # Get the RGBA Value of the a pixel of an image
 
 
 def addPixel(pX, pY, pQuadrant, pColor):
-    if pColor[0] > 127:
-        if pColor[1] > 127:
-            if pColor[2] >= 127:
-                pQuadrant.increaseLigthYellow()
-            else:
-                pQuadrant.increaseYellow()
-        elif pColor[1] == 127:
-            if pColor[2] > 127:
-                pQuadrant.increasePink()
-            elif pColor[2] == 127:
-                pQuadrant.increasePaloRosa()
-            else:
-                pQuadrant.increaseOrange()
-        else:
-            if pColor[2] > 127:
-                pQuadrant.increaseRose()
-            elif pColor[2] == 127:
-                pQuadrant.increaseFuchsia()
-            else:
-                pQuadrant.increaseRed()
-    elif pColor[0] == 127:
-        if pColor[1] > 127:
-            if pColor[2] > 127:
-                pQuadrant.increaseLightLightBlue()
-            elif pColor[2] == 127:
-                pQuadrant.increaseLigthLime()
-            else:
-                pQuadrant.increaseLime()
-        elif pColor[1] == 127:
-            if pColor[2] > 127:
-                pQuadrant.increaseLile()
-            elif pColor[2] == 127:
-                pQuadrant.increaseGrey()
-            else:
-                pQuadrant.increaseYellowGreen()
-        else:
-            if pColor[2] > 127:
-                pQuadrant.increasePurpura()
-            elif pColor[2] == 127:
-                pQuadrant.increasePurple()
-            else:
-                pQuadrant.increaseWine()
-    else:
-        if pColor[1] > 127:
-            if pColor[2] > 127:
-                pQuadrant.increaseCeleste()
-            elif pColor[2] == 127:
-                pQuadrant.increaseLigthGreen()
-            else:
-                pQuadrant.increaseGreen()
-        elif pColor[1] == 127:
-            if pColor[2] > 127:
-                pQuadrant.increaseLigthBlue()
-            elif pColor[2] == 127:
-                pQuadrant.increaseDarkTurquoise()
-            else:
-                pQuadrant.increaseDarkGreen()
-        else:
-            if pColor[2] > 127:
-                pQuadrant.increaseBlue()
-            elif pColor[2] == 127:
-                pQuadrant.increaseDarkBlue()
-            else:
-                pQuadrant.increaseBlack()
-    pQuadrant.listPixels.append(Pixel(pX, pY, pColor))
+    # print("Sector:",pQuadrant.nombre)
+    # print(pColor)
+    color = pQuadrant.arbol.searchColor(pColor)
+    if color.nombre != "Blanco":
+        # print(color)
+        color.cantidad += 1
+        # print("Cantidad Color:" ,color.cantidad)
+        pQuadrant.listPixels.append(Pixel(pX, pY, pColor))
+        # print("Cantidad Pixeles: ", len(pQuadrant.listPixels))
 
 
 def obtainSample(pQuantDivi, porcentage):
@@ -91,11 +34,13 @@ def createSectors(pQuantDiv, pLengthSector):
     yMax = pLengthSector
     xMax = pLengthSector
     sectorList = []
+    i = 0
     for fila in range(1, pQuantDiv + 1):
         for columna in range(1, pQuantDiv + 1):
-            sectorList.append(Sector(xMin, xMax, yMin, yMax))
+            sectorList.append(Sector((fila, columna), xMin, xMax, yMin, yMax))
             xMin += pLengthSector
             xMax += pLengthSector
+            i += 1
         xMin = 0
         xMax = pLengthSector
         yMin += pLengthSector
@@ -127,11 +72,11 @@ def mapSector(pQuantSample, pQuantDiv):
     for cant in range(1, 5):
         print(cant)
         randomProbability = random.uniform(0.1, 1.0)
-        #print("-----------------------------------------------------")
-        #print("I: ", cant, "Random:", randomProbability)
+        # print("-----------------------------------------------------")
+        # print("I: ", cant, "Random:", randomProbability)
         mapSample(sample, randomProbability, sectorList)
-        #print("-----------------------------------------------------")
-    for j in range(1, 11):
+        # print("-----------------------------------------------------")
+    for j in range(1, 501):
         i = 1
         for sector in sectorList:
             print('Sector', i)
@@ -140,7 +85,7 @@ def mapSector(pQuantSample, pQuantDiv):
                 Genetic(sector, j)
             #    print('------------------------------------------------------------------')
             i += 1
-        if j % 2 == 0 or j == 1:
+        if j % 50 == 0 or j == 1:
             terminarSVG(j)
 
 
@@ -155,4 +100,4 @@ def paintCuadricula(pX, pY, pImage):
     pix[pX, pY] = (0, 100, 0)
 
 
-sampling(16, 0.0001)
+sampling(64, 0.002)

@@ -1,10 +1,11 @@
 import random
+import math
 
-from ArbolColores import *
 from Cromosoma import *
 from Rango import *
 
 genesSet = []
+pivot = 0
 svgStringGrande = '<!DOCTYPE html>\n' + '<html>\n' + '<body>\n' + '<svg height = "1024" width = "1024">\n'
 cantidadCromosomas = (2 ** 8) - 1
 
@@ -20,12 +21,13 @@ def getChromoRange(pSector):
     for color in pSector.colores:
         color = pSector.arbol.searchColor(color.rgb)
         if color.porcentage > 0:
-            cromosomaMaximo = round(cromosomaMinimo + cantidadCromosomas * color.porcentage / 100)
+            cromosomaMaximo = math.floor(cromosomaMinimo + cantidadCromosomas * color.porcentage / 100)
+
             print('CromosomaMinimo:', cromosomaMinimo, 'CromosomaMaximo:', cromosomaMaximo, "Porcentaje:",
                   color.porcentage)
             rango = Rango(color, cromosomaMinimo, cromosomaMaximo)
             listaRangos.append(rango)
-            cromosomaMinimo = cromosomaMaximo + 1
+            cromosomaMinimo = cromosomaMaximo +1
     return listaRangos
 
 
@@ -38,17 +40,17 @@ def sacarColorRango(pGen, pListRanges):
 
 def crearPoblacion(pListRanges, pSector, pQuantPoblation):
     global genesSet, cantidadCromosomas
-    poblacion = []
     xMin = pSector.xMin - 10
     xMax = pSector.xMax + 10
     yMin = pSector.yMin - 10
     yMax = pSector.yMax + 10
+    lista = random.sample(range(cantidadCromosomas), pQuantPoblation)
     for i in range(0, pQuantPoblation):
-        x = random.randint(0, cantidadCromosomas)
-        poblacion.append(Cromosoma(x, genNumRan(xMin, xMax, yMin, yMax), genNumRan(xMin, xMax, yMin, yMax),
-                                   genNumRan(xMin, xMax, yMin, yMax), genNumRan(xMin, xMax, yMin, yMax),
-                                   sacarColorRango(x, pListRanges)))
-    return poblacion
+        color = sacarColorRango(lista[i], pListRanges)
+        # print("Color", color)
+        pSector.poblacion.append(
+            Cromosoma(lista[i], genNumRan(xMin, xMax, yMin, yMax), genNumRan(xMin, xMax, yMin, yMax),
+                      genNumRan(xMin, xMax, yMin, yMax), genNumRan(xMin, xMax, yMin, yMax), color))
 
 
 def averageSimilitud(pPoblacion, pObjetivo):
@@ -99,7 +101,7 @@ def crossover(pParent1, pParent2):
             ((pParent2 << pivotParent1) & cantidadCromosomas) >> pivotParent1)
     probMutation = random.randint(0, 100)
     if probMutation < 5:
-        bit = random.randint(0, 8)
+        bit = random.randint(0, 7)
         if isBitOn(descendant, bit):
             descendant = mutation(descendant, bit, 0)
         else:
@@ -108,10 +110,10 @@ def crossover(pParent1, pParent2):
 
 
 def sacarSVG(poblacion):
-    global svgStringGrande
+    global svgStringGrande, pivot
     svgString = "<polygon points= " + '"'
     for cromosoma in poblacion:
-        # print("Cromosoma: ", cromosoma)
+        #print("Cromosoma: ", cromosoma)
         svgString = svgString + str(cromosoma.point1[0]) + ',' + str(cromosoma.point1[1]) + ' '
         svgString = svgString + str(cromosoma.point2[0]) + ',' + str(cromosoma.point2[1]) + ' '
         svgString = svgString + str(cromosoma.point3[0]) + ',' + str(cromosoma.point3[1]) + ' '
@@ -146,7 +148,7 @@ def generateDescendant(pSector, pNewGenes, pColor):
                      genNumRan(pSector.xMin - 10, pSector.xMax + 10, pSector.yMin - 10, pSector.yMax + 10), pColor)
 
 
-def obtenerNuevaPoblacion(aptos, listaRangos, pSector, poblacion):
+def obtenerNuevaPoblacion(aptos, listaRangos, pSector):
     nuevaPoblacion = []
     if len(aptos) <= 1:
         print("Hay uno o menos aptos")
@@ -158,21 +160,27 @@ def obtenerNuevaPoblacion(aptos, listaRangos, pSector, poblacion):
             newDescendant2 = generateDescendant(pSector, newGenes2, sacarColorRango(newGenes2, listaRangos))
             nuevaPoblacion.append(aptos[i])
             nuevaPoblacion.append(aptos[i + 1])
+            #print("Descendiente 1:",newDescendant1)
+            #print("Descendiente 2:",newDescendant2)
             nuevaPoblacion.append(newDescendant1)
             nuevaPoblacion.append(newDescendant2)
             i += 1
-    return nuevaPoblacion
+    pSector.poblacion = nuevaPoblacion
 
 
 def Genetic(pSector, iteration):
     rangeList = getChromoRange(pSector)
     rangeList.sort(key=lambda x: x.porcentage, reverse=True)
     rangeList = sorted(rangeList, key=lambda x: x.porcentage, reverse=True)
-    pSector.poblacion = crearPoblacion(rangeList, pSector, 30)
-    if iteration % 50 == 0 or iteration == 1:
+    print(pSector.poblacion)
+    if pSector.poblacion == []:
+        print("Entre")
+        crearPoblacion(rangeList, pSector, 30)
+    if iteration % 1 == 0 or iteration == 1:
         sacarSVG(pSector.poblacion)
     aptos = sacarAptos(pSector.poblacion, rangeList)
-    pSector.poblacion = obtenerNuevaPoblacion(aptos, rangeList, pSector, pSector.poblacion)
+    obtenerNuevaPoblacion(aptos, rangeList, pSector)
+    print(pSector.poblacion)
 
 
 def terminarSVG(iteracion):

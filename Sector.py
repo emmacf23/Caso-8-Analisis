@@ -57,16 +57,16 @@ class Sector:
 
     def porcentajePorColor(self):
         cantSample = len(self.listPixels)
-        print("Sector:", self.nombre)
-        print("Cantidad:", cantSample)
+        #print("Sector:", self.nombre)
+        #print("Cantidad:", cantSample)
         for color in self.colores:
             colorArbol = self.arbol.searchColor(color.rgb)
             #            print("Arbol",self.arbolColores)
             if cantSample > 0:
                 colorArbol.porcentage = 100 / cantSample * colorArbol.cantidad
-                if colorArbol.porcentage > 0:
-                    print("Cantidad Color:", colorArbol.cantidad)
-                    print("Color: ", colorArbol.nombre, " Porcentaje: ", colorArbol.porcentage)
+        #        if colorArbol.porcentage > 0:
+         #           print("Cantidad Color:", colorArbol.cantidad)
+        #          print("Color: ", colorArbol.nombre, " Porcentaje: ", colorArbol.porcentage)
 
     def crearColores(self):
         negro = Color("Negro", (0, 0, 0))

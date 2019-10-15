@@ -27,7 +27,7 @@ def getChromoRange(pSector):
                   color.porcentage)
             rango = Rango(color, cromosomaMinimo, cromosomaMaximo)
             listaRangos.append(rango)
-            cromosomaMinimo = cromosomaMaximo +1
+            cromosomaMinimo = cromosomaMaximo + 1
     return listaRangos
 
 
@@ -65,8 +65,6 @@ def getSimilitud(pIndividuo, pObjetivo):
 
 
 def aplicarFitness(pIndividuo, pObjetivo, pPoblacion):
-    averagePoblacion = averageSimilitud(pPoblacion, pObjetivo)
-    averageIndividuo = getSimilitud(pIndividuo, pObjetivo)
     pIndividuo.aptitud = getSimilitud(pIndividuo, pObjetivo) / pObjetivo
 
 
@@ -113,7 +111,7 @@ def sacarSVG(poblacion):
     global svgStringGrande, pivot
     svgString = "<polygon points= " + '"'
     for cromosoma in poblacion:
-        #print("Cromosoma: ", cromosoma)
+        # print("Cromosoma: ", cromosoma)
         svgString = svgString + str(cromosoma.point1[0]) + ',' + str(cromosoma.point1[1]) + ' '
         svgString = svgString + str(cromosoma.point2[0]) + ',' + str(cromosoma.point2[1]) + ' '
         svgString = svgString + str(cromosoma.point3[0]) + ',' + str(cromosoma.point3[1]) + ' '
@@ -122,6 +120,7 @@ def sacarSVG(poblacion):
             cromosoma.Color.rgb) + '"/>'
         svgStringGrande = svgStringGrande + svgString + "\n"
         svgString = "<polygon points= " + '"'
+
 
 
 def obtenerAptos(poblacion, listaRangos):
@@ -150,9 +149,7 @@ def generateDescendant(pSector, pNewGenes, pColor):
 
 def obtenerNuevaPoblacion(aptos, listaRangos, pSector):
     nuevaPoblacion = []
-    if len(aptos) <= 1:
-        print("Hay uno o menos aptos")
-    else:
+    if len(aptos) > 1:
         for i in range(0, round(len(aptos) / 2)):
             newGenes1 = crossover(aptos[i].genes, aptos[i + 1].genes)
             newGenes2 = crossover(aptos[i + 1].genes, aptos[i].genes)
@@ -160,8 +157,6 @@ def obtenerNuevaPoblacion(aptos, listaRangos, pSector):
             newDescendant2 = generateDescendant(pSector, newGenes2, sacarColorRango(newGenes2, listaRangos))
             nuevaPoblacion.append(aptos[i])
             nuevaPoblacion.append(aptos[i + 1])
-            #print("Descendiente 1:",newDescendant1)
-            #print("Descendiente 2:",newDescendant2)
             nuevaPoblacion.append(newDescendant1)
             nuevaPoblacion.append(newDescendant2)
             i += 1
@@ -172,20 +167,17 @@ def Genetic(pSector, iteration):
     rangeList = getChromoRange(pSector)
     rangeList.sort(key=lambda x: x.porcentage, reverse=True)
     rangeList = sorted(rangeList, key=lambda x: x.porcentage, reverse=True)
-    print(pSector.poblacion)
     if pSector.poblacion == []:
-        print("Entre")
-        crearPoblacion(rangeList, pSector, 30)
-    if iteration % 1 == 0 or iteration == 1:
+        crearPoblacion(rangeList, pSector, 10)
+    if iteration % 5 == 0 or iteration == 1:
         sacarSVG(pSector.poblacion)
     aptos = sacarAptos(pSector.poblacion, rangeList)
     obtenerNuevaPoblacion(aptos, rangeList, pSector)
-    print(pSector.poblacion)
 
 
-def terminarSVG(iteracion):
+def terminarSVG():
     global svgStringGrande
     svgStringGrande = svgStringGrande + '</svg>\n' + '</body>\n' + '</html>\n'
-    with open("poligonos" + str(iteracion) + ".html", "w") as file:
+    with open("index" + ".html", "w") as file:
         file.write(svgStringGrande)
     svgStringGrande = '<!DOCTYPE html>\n' + '<html>\n' + '<body>\n' + '<svg height = "1024" width = "1024">\n'

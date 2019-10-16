@@ -6,8 +6,12 @@ from Rango import *
 
 genesSet = []
 pivot = 0
-svgStringGrande = '<!DOCTYPE html>\n' + '<html>\n' + '<body>\n' + '<svg height = "1024" width = "1024">\n'
-cantidadCromosomas = (2 ** 8) - 1
+
+svgStringGrande = '<!DOCTYPE html>\n' + '<html>\n' + '<body>\n' + "<script>\nfunction timedRefresh(timeoutPerioud) {\n"
+svgStringGrande += "setTimeout('location.reload(true);',timeoutPeriod);\n}" + "window.onload = timedRefresh(5000);\n"
+svgStringGrande += "</script>\n" + '<svg height = "1024" width = "1024">\n'
+
+cantidadCromosomas = (2 ** 16) - 1
 
 
 def genNumRan(begin1, end1, begin2, end2):
@@ -99,7 +103,7 @@ def crossover(pParent1, pParent2):
             ((pParent2 << pivotParent1) & cantidadCromosomas) >> pivotParent1)
     probMutation = random.randint(0, 100)
     if probMutation < 5:
-        bit = random.randint(0, 7)
+        bit = random.randint(0, 15)
         if isBitOn(descendant, bit):
             descendant = mutation(descendant, bit, 0)
         else:
@@ -169,7 +173,7 @@ def Genetic(pSector, iteration):
     rangeList = sorted(rangeList, key=lambda x: x.porcentage, reverse=True)
     if pSector.poblacion == []:
         crearPoblacion(rangeList, pSector, 10)
-    if iteration % 5 == 0 or iteration == 1:
+    if iteration % 25 == 0 or iteration == 1:
         sacarSVG(pSector.poblacion)
     aptos = sacarAptos(pSector.poblacion, rangeList)
     obtenerNuevaPoblacion(aptos, rangeList, pSector)
@@ -180,4 +184,6 @@ def terminarSVG():
     svgStringGrande = svgStringGrande + '</svg>\n' + '</body>\n' + '</html>\n'
     with open("index" + ".html", "w") as file:
         file.write(svgStringGrande)
-    svgStringGrande = '<!DOCTYPE html>\n' + '<html>\n' + '<body>\n' + '<svg height = "1024" width = "1024">\n'
+    svgStringGrande = '<!DOCTYPE html>\n' + '<html>\n' + '<body>\n' + "<script>\nfunction timedRefresh(timeoutPerioud) {\n"
+    svgStringGrande += "setTimeout('location.reload(true);',timeoutPeriod);\n}" + "window.onload = timedRefresh(5000);\n"
+    svgStringGrande += "</script>\n" + '<svg height = "1024" width = "1024">\n'
